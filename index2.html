@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title> 
+</head>
+<body>
+    <body>
+        <h1>Javascript Web Output #2</h1>
+        <form id="userForm">
+          <style>
+            label {
+                width: 8%;
+                text-align: left;
+                display: inline-block;
+              }
+            </style>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName"><br>
+    
+            <label for="middleName">Middle Name:</label>
+            <input type="text" id="middleName" name="middleName"><br>
+    
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName"><br>
+    
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age"><br>
+    
+            <button type="button" onclick="submitForm()">Insert</button>
+            <button type="button" onclick="clearForm()">Clear Text Area</button>
+        </form>
+    
+        <fieldset>
+            <legend>Records</legend>
+            <div id="noRecord">No records</div>
+            <table id="userTable" style="display:none; margin: 0 auto; ">
+                <tr>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </tr>
+            </table>
+        </fieldset>
+        <button type="button" onclick="clearAll()">Clear Records</button>
+        <script>
+        let userData = [];
+
+        function clearAll() {
+        userData = [];
+        displayData();
+    }  
+
+function submitForm() {
+	let firstName = document.getElementById("firstName").value;
+	let middleName = document.getElementById("middleName").value;
+	let lastName = document.getElementById("lastName").value;
+	let age = document.getElementById("age").value;
+
+	if(firstName === "" || middleName === "" || lastName === "" || age === "") {
+		alert("Please fill out all the details.");
+	} else {
+		let user = {
+			firstName: firstName,
+			middleName: middleName,
+			lastName: lastName,
+			age: age
+		};
+		userData.push(user);
+		displayData();
+	}
+}
+
+function clearForm() {
+	document.getElementById("firstName").value = "";
+	document.getElementById("middleName").value = "";
+	document.getElementById("lastName").value = "";
+	document.getElementById("age").value = "";
+}
+
+function displayData() {
+	let table = document.getElementById("userTable");
+	let noRecord = document.getElementById("noRecord");
+
+	// Clear the table before redisplaying the data
+	while (table.rows.length > 1) {
+		table.deleteRow(1);
+	}
+
+	if (userData.length === 0) {
+		table.style.display = "none";
+		noRecord.style.display = "block";
+		return;
+	}
+
+	table.style.display = "table";
+	noRecord.style.display = "none";
+
+	for(let i = 0; i < userData.length; i++) {
+		let row = table.insertRow();
+		let firstNameCell = row.insertCell(0);
+		let middleNameCell = row.insertCell(1);
+		let lastNameCell = row.insertCell(2);
+		let ageCell = row.insertCell(3);
+		let actionCell = row.insertCell(4);
+
+		firstNameCell.innerHTML = userData[i].firstName;
+		middleNameCell.innerHTML = userData[i].middleName;
+		lastNameCell.innerHTML = userData[i].lastName;
+		ageCell.innerHTML = userData[i].age;
+        actionCell.innerHTML = '<button onclick="editUser(' + i + ')">Edit</button> <button onclick="deleteUser(' + i + ')">Delete</button>';
+	}
+}
+
+function editUser(index) {
+    let user = userData[index];
+
+    document.getElementById("firstName").value = user.firstName;
+    document.getElementById("middleName").value = user.middleName;
+    document.getElementById("lastName").value = user.lastName;
+    document.getElementById("age").value = user.age;
+
+    userData.splice(index, 1);
+    
+    let submitButton = document.querySelector('#userForm button[type="button"]');
+    submitButton.onclick = function() {
+        let firstName = document.getElementById("firstName").value;
+        let middleName = document.getElementById("middleName").value;
+        let lastName = document.getElementById("lastName").value;
+        let age = document.getElementById("age").value;
+
+        if (firstName === "" || middleName === "" || lastName === "" || age === "") {
+            alert("Please fill out all the details.");
+        } else {
+            let updatedUser = {
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                age: age
+            };
+            
+            userData.splice(index, 0, updatedUser);
+            displayData();
+            clearForm();
+        }
+    };
+}
+
+function deleteUser(index) {
+	userData.splice(index, 1);
+
+	displayData();
+}
+
+        </script>
+</body>
+</html>
